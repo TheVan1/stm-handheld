@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0000400c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00009c60  00000000  00000000  0000403c  2**0
+ 12 .debug_info   00009c4d  00000000  00000000  0000403c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000015fa  00000000  00000000  0000dc9c  2**0
+ 13 .debug_abbrev 000015fb  00000000  00000000  0000dc89  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000900  00000000  00000000  0000f298  2**3
+ 14 .debug_aranges 00000900  00000000  00000000  0000f288  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 00000716  00000000  00000000  0000fb98  2**0
+ 15 .debug_rnglists 00000716  00000000  00000000  0000fb88  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00015617  00000000  00000000  000102ae  2**0
+ 16 .debug_macro  00015617  00000000  00000000  0001029e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000b453  00000000  00000000  000258c5  2**0
+ 17 .debug_line   0000b45b  00000000  00000000  000258b5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00086dbb  00000000  00000000  00030d18  2**0
+ 18 .debug_str    00086dbb  00000000  00000000  00030d10  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000086  00000000  00000000  000b7ad3  2**0
+ 19 .comment      00000086  00000000  00000000  000b7acb  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000259c  00000000  00000000  000b7b5c  2**2
+ 20 .debug_frame  0000259c  00000000  00000000  000b7b54  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000006e  00000000  00000000  000ba0f8  2**0
+ 21 .debug_line_str 0000006e  00000000  00000000  000ba0f0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -3322,12 +3322,12 @@ HAL_StatusTypeDef HAL_I2C_Init(I2C_HandleTypeDef *hi2c)
  80015bc:	10624dd3 	.word	0x10624dd3
 
 080015c0 <HAL_I2C_Master_Transmit>:
+  * @param  Size Amount of data to be sent
   * @param  Timeout Timeout duration
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
-  /* Init tickstart for timeout management*/
  80015c0:	b580      	push	{r7, lr}
  80015c2:	b088      	sub	sp, #32
  80015c4:	af02      	add	r7, sp, #8
@@ -3338,20 +3338,20 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  80015ce:	817b      	strh	r3, [r7, #10]
  80015d0:	4613      	mov	r3, r2
  80015d2:	813b      	strh	r3, [r7, #8]
+  /* Init tickstart for timeout management*/
   uint32_t tickstart = HAL_GetTick();
-
  80015d4:	f7ff fbfc 	bl	8000dd0 <HAL_GetTick>
  80015d8:	6178      	str	r0, [r7, #20]
+
   if (hi2c->State == HAL_I2C_STATE_READY)
-  {
  80015da:	68fb      	ldr	r3, [r7, #12]
  80015dc:	f893 303d 	ldrb.w	r3, [r3, #61]	@ 0x3d
  80015e0:	b2db      	uxtb	r3, r3
  80015e2:	2b20      	cmp	r3, #32
  80015e4:	f040 80e0 	bne.w	80017a8 <HAL_I2C_Master_Transmit+0x1e8>
+  {
     /* Wait until BUSY flag is reset */
     if (I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_BUSY, SET, I2C_TIMEOUT_BUSY_FLAG, tickstart) != HAL_OK)
-    {
  80015e8:	697b      	ldr	r3, [r7, #20]
  80015ea:	9300      	str	r3, [sp, #0]
  80015ec:	2319      	movs	r3, #25
@@ -3362,14 +3362,14 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  80015f8:	4603      	mov	r3, r0
  80015fa:	2b00      	cmp	r3, #0
  80015fc:	d001      	beq.n	8001602 <HAL_I2C_Master_Transmit+0x42>
+    {
       return HAL_BUSY;
-    }
  80015fe:	2302      	movs	r3, #2
  8001600:	e0d3      	b.n	80017aa <HAL_I2C_Master_Transmit+0x1ea>
+    }
 
     /* Process Locked */
     __HAL_LOCK(hi2c);
-
  8001602:	68fb      	ldr	r3, [r7, #12]
  8001604:	f893 303c 	ldrb.w	r3, [r3, #60]	@ 0x3c
  8001608:	2b01      	cmp	r3, #1
@@ -3379,18 +3379,18 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  8001610:	68fb      	ldr	r3, [r7, #12]
  8001612:	2201      	movs	r2, #1
  8001614:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
     /* Check if the I2C is already enabled */
     if ((hi2c->Instance->CR1 & I2C_CR1_PE) != I2C_CR1_PE)
-    {
  8001618:	68fb      	ldr	r3, [r7, #12]
  800161a:	681b      	ldr	r3, [r3, #0]
  800161c:	681b      	ldr	r3, [r3, #0]
  800161e:	f003 0301 	and.w	r3, r3, #1
  8001622:	2b01      	cmp	r3, #1
  8001624:	d007      	beq.n	8001636 <HAL_I2C_Master_Transmit+0x76>
+    {
       /* Enable I2C peripheral */
       __HAL_I2C_ENABLE(hi2c);
-    }
  8001626:	68fb      	ldr	r3, [r7, #12]
  8001628:	681b      	ldr	r3, [r3, #0]
  800162a:	681a      	ldr	r2, [r3, #0]
@@ -3398,10 +3398,10 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  800162e:	681b      	ldr	r3, [r3, #0]
  8001630:	f042 0201 	orr.w	r2, r2, #1
  8001634:	601a      	str	r2, [r3, #0]
+    }
 
     /* Disable Pos */
     CLEAR_BIT(hi2c->Instance->CR1, I2C_CR1_POS);
-
  8001636:	68fb      	ldr	r3, [r7, #12]
  8001638:	681b      	ldr	r3, [r3, #0]
  800163a:	681a      	ldr	r2, [r3, #0]
@@ -3409,42 +3409,42 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  800163e:	681b      	ldr	r3, [r3, #0]
  8001640:	f422 6200 	bic.w	r2, r2, #2048	@ 0x800
  8001644:	601a      	str	r2, [r3, #0]
+
     hi2c->State       = HAL_I2C_STATE_BUSY_TX;
-    hi2c->Mode        = HAL_I2C_MODE_MASTER;
  8001646:	68fb      	ldr	r3, [r7, #12]
  8001648:	2221      	movs	r2, #33	@ 0x21
  800164a:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-    hi2c->ErrorCode   = HAL_I2C_ERROR_NONE;
+    hi2c->Mode        = HAL_I2C_MODE_MASTER;
  800164e:	68fb      	ldr	r3, [r7, #12]
  8001650:	2210      	movs	r2, #16
  8001652:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
-
+    hi2c->ErrorCode   = HAL_I2C_ERROR_NONE;
  8001656:	68fb      	ldr	r3, [r7, #12]
  8001658:	2200      	movs	r2, #0
  800165a:	641a      	str	r2, [r3, #64]	@ 0x40
+
     /* Prepare transfer parameters */
     hi2c->pBuffPtr    = pData;
-    hi2c->XferCount   = Size;
  800165c:	68fb      	ldr	r3, [r7, #12]
  800165e:	687a      	ldr	r2, [r7, #4]
  8001660:	625a      	str	r2, [r3, #36]	@ 0x24
-    hi2c->XferSize    = hi2c->XferCount;
+    hi2c->XferCount   = Size;
  8001662:	68fb      	ldr	r3, [r7, #12]
  8001664:	893a      	ldrh	r2, [r7, #8]
  8001666:	855a      	strh	r2, [r3, #42]	@ 0x2a
-    hi2c->XferOptions = I2C_NO_OPTION_FRAME;
+    hi2c->XferSize    = hi2c->XferCount;
  8001668:	68fb      	ldr	r3, [r7, #12]
  800166a:	8d5b      	ldrh	r3, [r3, #42]	@ 0x2a
  800166c:	b29a      	uxth	r2, r3
  800166e:	68fb      	ldr	r3, [r7, #12]
  8001670:	851a      	strh	r2, [r3, #40]	@ 0x28
-
+    hi2c->XferOptions = I2C_NO_OPTION_FRAME;
  8001672:	68fb      	ldr	r3, [r7, #12]
  8001674:	4a50      	ldr	r2, [pc, #320]	@ (80017b8 <HAL_I2C_Master_Transmit+0x1f8>)
  8001676:	62da      	str	r2, [r3, #44]	@ 0x2c
+
     /* Send Slave Address */
     if (I2C_MasterRequestWrite(hi2c, DevAddress, Timeout, tickstart) != HAL_OK)
-    {
  8001678:	8979      	ldrh	r1, [r7, #10]
  800167a:	697b      	ldr	r3, [r7, #20]
  800167c:	6a3a      	ldr	r2, [r7, #32]
@@ -3453,14 +3453,14 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  8001684:	4603      	mov	r3, r0
  8001686:	2b00      	cmp	r3, #0
  8001688:	d001      	beq.n	800168e <HAL_I2C_Master_Transmit+0xce>
+    {
       return HAL_ERROR;
-    }
  800168a:	2301      	movs	r3, #1
  800168c:	e08d      	b.n	80017aa <HAL_I2C_Master_Transmit+0x1ea>
+    }
 
     /* Clear ADDR flag */
     __HAL_I2C_CLEAR_ADDRFLAG(hi2c);
-
  800168e:	2300      	movs	r3, #0
  8001690:	613b      	str	r3, [r7, #16]
  8001692:	68fb      	ldr	r3, [r7, #12]
@@ -3472,12 +3472,12 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  800169e:	699b      	ldr	r3, [r3, #24]
  80016a0:	613b      	str	r3, [r7, #16]
  80016a2:	693b      	ldr	r3, [r7, #16]
+
     while (hi2c->XferSize > 0U)
-    {
  80016a4:	e066      	b.n	8001774 <HAL_I2C_Master_Transmit+0x1b4>
+    {
       /* Wait until TXE flag is set */
       if (I2C_WaitOnTXEFlagUntilTimeout(hi2c, Timeout, tickstart) != HAL_OK)
-      {
  80016a6:	697a      	ldr	r2, [r7, #20]
  80016a8:	6a39      	ldr	r1, [r7, #32]
  80016aa:	68f8      	ldr	r0, [r7, #12]
@@ -3485,15 +3485,15 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  80016b0:	4603      	mov	r3, r0
  80016b2:	2b00      	cmp	r3, #0
  80016b4:	d00d      	beq.n	80016d2 <HAL_I2C_Master_Transmit+0x112>
+      {
         if (hi2c->ErrorCode == HAL_I2C_ERROR_AF)
-        {
  80016b6:	68fb      	ldr	r3, [r7, #12]
  80016b8:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  80016ba:	2b04      	cmp	r3, #4
  80016bc:	d107      	bne.n	80016ce <HAL_I2C_Master_Transmit+0x10e>
+        {
           /* Generate Stop */
           SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
-        }
  80016be:	68fb      	ldr	r3, [r7, #12]
  80016c0:	681b      	ldr	r3, [r3, #0]
  80016c2:	681a      	ldr	r2, [r3, #0]
@@ -3501,31 +3501,31 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  80016c6:	681b      	ldr	r3, [r3, #0]
  80016c8:	f442 7200 	orr.w	r2, r2, #512	@ 0x200
  80016cc:	601a      	str	r2, [r3, #0]
+        }
         return HAL_ERROR;
-      }
  80016ce:	2301      	movs	r3, #1
  80016d0:	e06b      	b.n	80017aa <HAL_I2C_Master_Transmit+0x1ea>
+      }
 
       /* Write data to DR */
       hi2c->Instance->DR = *hi2c->pBuffPtr;
-
  80016d2:	68fb      	ldr	r3, [r7, #12]
  80016d4:	6a5b      	ldr	r3, [r3, #36]	@ 0x24
  80016d6:	781a      	ldrb	r2, [r3, #0]
  80016d8:	68fb      	ldr	r3, [r7, #12]
  80016da:	681b      	ldr	r3, [r3, #0]
  80016dc:	611a      	str	r2, [r3, #16]
+
       /* Increment Buffer pointer */
       hi2c->pBuffPtr++;
-
  80016de:	68fb      	ldr	r3, [r7, #12]
  80016e0:	6a5b      	ldr	r3, [r3, #36]	@ 0x24
  80016e2:	1c5a      	adds	r2, r3, #1
  80016e4:	68fb      	ldr	r3, [r7, #12]
  80016e6:	625a      	str	r2, [r3, #36]	@ 0x24
+
       /* Update counter */
       hi2c->XferCount--;
-      hi2c->XferSize--;
  80016e8:	68fb      	ldr	r3, [r7, #12]
  80016ea:	8d5b      	ldrh	r3, [r3, #42]	@ 0x2a
  80016ec:	b29b      	uxth	r3, r3
@@ -3533,15 +3533,15 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  80016f0:	b29a      	uxth	r2, r3
  80016f2:	68fb      	ldr	r3, [r7, #12]
  80016f4:	855a      	strh	r2, [r3, #42]	@ 0x2a
-
+      hi2c->XferSize--;
  80016f6:	68fb      	ldr	r3, [r7, #12]
  80016f8:	8d1b      	ldrh	r3, [r3, #40]	@ 0x28
  80016fa:	3b01      	subs	r3, #1
  80016fc:	b29a      	uxth	r2, r3
  80016fe:	68fb      	ldr	r3, [r7, #12]
  8001700:	851a      	strh	r2, [r3, #40]	@ 0x28
+
       if ((__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == SET) && (hi2c->XferSize != 0U))
-      {
  8001702:	68fb      	ldr	r3, [r7, #12]
  8001704:	681b      	ldr	r3, [r3, #0]
  8001706:	695b      	ldr	r3, [r3, #20]
@@ -3552,26 +3552,26 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  8001712:	8d1b      	ldrh	r3, [r3, #40]	@ 0x28
  8001714:	2b00      	cmp	r3, #0
  8001716:	d017      	beq.n	8001748 <HAL_I2C_Master_Transmit+0x188>
+      {
         /* Write data to DR */
         hi2c->Instance->DR = *hi2c->pBuffPtr;
-
  8001718:	68fb      	ldr	r3, [r7, #12]
  800171a:	6a5b      	ldr	r3, [r3, #36]	@ 0x24
  800171c:	781a      	ldrb	r2, [r3, #0]
  800171e:	68fb      	ldr	r3, [r7, #12]
  8001720:	681b      	ldr	r3, [r3, #0]
  8001722:	611a      	str	r2, [r3, #16]
+
         /* Increment Buffer pointer */
         hi2c->pBuffPtr++;
-
  8001724:	68fb      	ldr	r3, [r7, #12]
  8001726:	6a5b      	ldr	r3, [r3, #36]	@ 0x24
  8001728:	1c5a      	adds	r2, r3, #1
  800172a:	68fb      	ldr	r3, [r7, #12]
  800172c:	625a      	str	r2, [r3, #36]	@ 0x24
+
         /* Update counter */
         hi2c->XferCount--;
-        hi2c->XferSize--;
  800172e:	68fb      	ldr	r3, [r7, #12]
  8001730:	8d5b      	ldrh	r3, [r3, #42]	@ 0x2a
  8001732:	b29b      	uxth	r3, r3
@@ -3579,17 +3579,17 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  8001736:	b29a      	uxth	r2, r3
  8001738:	68fb      	ldr	r3, [r7, #12]
  800173a:	855a      	strh	r2, [r3, #42]	@ 0x2a
-      }
+        hi2c->XferSize--;
  800173c:	68fb      	ldr	r3, [r7, #12]
  800173e:	8d1b      	ldrh	r3, [r3, #40]	@ 0x28
  8001740:	3b01      	subs	r3, #1
  8001742:	b29a      	uxth	r2, r3
  8001744:	68fb      	ldr	r3, [r7, #12]
  8001746:	851a      	strh	r2, [r3, #40]	@ 0x28
+      }
 
       /* Wait until BTF flag is set */
       if (I2C_WaitOnBTFFlagUntilTimeout(hi2c, Timeout, tickstart) != HAL_OK)
-      {
  8001748:	697a      	ldr	r2, [r7, #20]
  800174a:	6a39      	ldr	r1, [r7, #32]
  800174c:	68f8      	ldr	r0, [r7, #12]
@@ -3597,15 +3597,15 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  8001752:	4603      	mov	r3, r0
  8001754:	2b00      	cmp	r3, #0
  8001756:	d00d      	beq.n	8001774 <HAL_I2C_Master_Transmit+0x1b4>
+      {
         if (hi2c->ErrorCode == HAL_I2C_ERROR_AF)
-        {
  8001758:	68fb      	ldr	r3, [r7, #12]
  800175a:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  800175c:	2b04      	cmp	r3, #4
  800175e:	d107      	bne.n	8001770 <HAL_I2C_Master_Transmit+0x1b0>
+        {
           /* Generate Stop */
           SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
-        }
  8001760:	68fb      	ldr	r3, [r7, #12]
  8001762:	681b      	ldr	r3, [r3, #0]
  8001764:	681a      	ldr	r2, [r3, #0]
@@ -3613,20 +3613,20 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  8001768:	681b      	ldr	r3, [r3, #0]
  800176a:	f442 7200 	orr.w	r2, r2, #512	@ 0x200
  800176e:	601a      	str	r2, [r3, #0]
+        }
         return HAL_ERROR;
-      }
  8001770:	2301      	movs	r3, #1
  8001772:	e01a      	b.n	80017aa <HAL_I2C_Master_Transmit+0x1ea>
-    {
+    while (hi2c->XferSize > 0U)
  8001774:	68fb      	ldr	r3, [r7, #12]
  8001776:	8d1b      	ldrh	r3, [r3, #40]	@ 0x28
  8001778:	2b00      	cmp	r3, #0
  800177a:	d194      	bne.n	80016a6 <HAL_I2C_Master_Transmit+0xe6>
+      }
     }
 
     /* Generate Stop */
     SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
-
  800177c:	68fb      	ldr	r3, [r7, #12]
  800177e:	681b      	ldr	r3, [r3, #0]
  8001780:	681a      	ldr	r2, [r3, #0]
@@ -3634,32 +3634,32 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  8001784:	681b      	ldr	r3, [r3, #0]
  8001786:	f442 7200 	orr.w	r2, r2, #512	@ 0x200
  800178a:	601a      	str	r2, [r3, #0]
+
     hi2c->State = HAL_I2C_STATE_READY;
-    hi2c->Mode = HAL_I2C_MODE_NONE;
  800178c:	68fb      	ldr	r3, [r7, #12]
  800178e:	2220      	movs	r2, #32
  8001790:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-
+    hi2c->Mode = HAL_I2C_MODE_NONE;
  8001794:	68fb      	ldr	r3, [r7, #12]
  8001796:	2200      	movs	r2, #0
  8001798:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
+
     /* Process Unlocked */
     __HAL_UNLOCK(hi2c);
-
  800179c:	68fb      	ldr	r3, [r7, #12]
  800179e:	2200      	movs	r2, #0
  80017a0:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
     return HAL_OK;
-  }
  80017a4:	2300      	movs	r3, #0
  80017a6:	e000      	b.n	80017aa <HAL_I2C_Master_Transmit+0x1ea>
+  }
   else
   {
     return HAL_BUSY;
-  }
  80017a8:	2302      	movs	r3, #2
+  }
 }
-
  80017aa:	4618      	mov	r0, r3
  80017ac:	3718      	adds	r7, #24
  80017ae:	46bd      	mov	sp, r7
@@ -3669,12 +3669,12 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, uint16_t DevA
  80017b8:	ffff0000 	.word	0xffff0000
 
 080017bc <I2C_MasterRequestWrite>:
+  * @param  Timeout Timeout duration
   * @param  Tickstart Tick start value
   * @retval HAL status
   */
 static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint32_t Timeout, uint32_t Tickstart)
 {
-  /* Declaration of temporary variable to prevent undefined behavior of volatile usage */
  80017bc:	b580      	push	{r7, lr}
  80017be:	b088      	sub	sp, #32
  80017c0:	af02      	add	r7, sp, #8
@@ -3683,14 +3683,14 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  80017c6:	603b      	str	r3, [r7, #0]
  80017c8:	460b      	mov	r3, r1
  80017ca:	817b      	strh	r3, [r7, #10]
+  /* Declaration of temporary variable to prevent undefined behavior of volatile usage */
   uint32_t CurrentXferOptions = hi2c->XferOptions;
-
  80017cc:	68fb      	ldr	r3, [r7, #12]
  80017ce:	6adb      	ldr	r3, [r3, #44]	@ 0x2c
  80017d0:	617b      	str	r3, [r7, #20]
+
   /* Generate Start condition if first transfer */
   if ((CurrentXferOptions == I2C_FIRST_AND_LAST_FRAME) || (CurrentXferOptions == I2C_FIRST_FRAME) || (CurrentXferOptions == I2C_NO_OPTION_FRAME))
-  {
  80017d2:	697b      	ldr	r3, [r7, #20]
  80017d4:	2b08      	cmp	r3, #8
  80017d6:	d006      	beq.n	80017e6 <I2C_MasterRequestWrite+0x2a>
@@ -3700,9 +3700,9 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  80017de:	697b      	ldr	r3, [r7, #20]
  80017e0:	f513 3f80 	cmn.w	r3, #65536	@ 0x10000
  80017e4:	d108      	bne.n	80017f8 <I2C_MasterRequestWrite+0x3c>
+  {
     /* Generate Start */
     SET_BIT(hi2c->Instance->CR1, I2C_CR1_START);
-  }
  80017e6:	68fb      	ldr	r3, [r7, #12]
  80017e8:	681b      	ldr	r3, [r3, #0]
  80017ea:	681a      	ldr	r2, [r3, #0]
@@ -3711,15 +3711,15 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  80017f0:	f442 7280 	orr.w	r2, r2, #256	@ 0x100
  80017f4:	601a      	str	r2, [r3, #0]
  80017f6:	e00b      	b.n	8001810 <I2C_MasterRequestWrite+0x54>
+  }
   else if (hi2c->PreviousState == I2C_STATE_MASTER_BUSY_RX)
-  {
  80017f8:	68fb      	ldr	r3, [r7, #12]
  80017fa:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
  80017fc:	2b12      	cmp	r3, #18
  80017fe:	d107      	bne.n	8001810 <I2C_MasterRequestWrite+0x54>
+  {
     /* Generate ReStart */
     SET_BIT(hi2c->Instance->CR1, I2C_CR1_START);
-  }
  8001800:	68fb      	ldr	r3, [r7, #12]
  8001802:	681b      	ldr	r3, [r3, #0]
  8001804:	681a      	ldr	r2, [r3, #0]
@@ -3727,12 +3727,12 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  8001808:	681b      	ldr	r3, [r3, #0]
  800180a:	f442 7280 	orr.w	r2, r2, #256	@ 0x100
  800180e:	601a      	str	r2, [r3, #0]
+  {
     /* Do nothing */
   }
 
   /* Wait until SB flag is set */
   if (I2C_WaitOnFlagUntilTimeout(hi2c, I2C_FLAG_SB, RESET, Timeout, Tickstart) != HAL_OK)
-  {
  8001810:	683b      	ldr	r3, [r7, #0]
  8001812:	9300      	str	r3, [sp, #0]
  8001814:	687b      	ldr	r3, [r7, #4]
@@ -3743,33 +3743,33 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  8001822:	4603      	mov	r3, r0
  8001824:	2b00      	cmp	r3, #0
  8001826:	d00d      	beq.n	8001844 <I2C_MasterRequestWrite+0x88>
+  {
     if (READ_BIT(hi2c->Instance->CR1, I2C_CR1_START) == I2C_CR1_START)
-    {
  8001828:	68fb      	ldr	r3, [r7, #12]
  800182a:	681b      	ldr	r3, [r3, #0]
  800182c:	681b      	ldr	r3, [r3, #0]
  800182e:	f403 7380 	and.w	r3, r3, #256	@ 0x100
  8001832:	f5b3 7f80 	cmp.w	r3, #256	@ 0x100
  8001836:	d103      	bne.n	8001840 <I2C_MasterRequestWrite+0x84>
+    {
       hi2c->ErrorCode = HAL_I2C_WRONG_START;
-    }
  8001838:	68fb      	ldr	r3, [r7, #12]
  800183a:	f44f 7200 	mov.w	r2, #512	@ 0x200
  800183e:	641a      	str	r2, [r3, #64]	@ 0x40
+    }
     return HAL_TIMEOUT;
-  }
  8001840:	2303      	movs	r3, #3
  8001842:	e035      	b.n	80018b0 <I2C_MasterRequestWrite+0xf4>
+  }
 
   if (hi2c->Init.AddressingMode == I2C_ADDRESSINGMODE_7BIT)
-  {
  8001844:	68fb      	ldr	r3, [r7, #12]
  8001846:	691b      	ldr	r3, [r3, #16]
  8001848:	f5b3 4f80 	cmp.w	r3, #16384	@ 0x4000
  800184c:	d108      	bne.n	8001860 <I2C_MasterRequestWrite+0xa4>
+  {
     /* Send slave address */
     hi2c->Instance->DR = I2C_7BIT_ADD_WRITE(DevAddress);
-  }
  800184e:	897b      	ldrh	r3, [r7, #10]
  8001850:	b2db      	uxtb	r3, r3
  8001852:	461a      	mov	r2, r3
@@ -3778,11 +3778,11 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  8001858:	f002 02fe 	and.w	r2, r2, #254	@ 0xfe
  800185c:	611a      	str	r2, [r3, #16]
  800185e:	e01b      	b.n	8001898 <I2C_MasterRequestWrite+0xdc>
+  }
   else
   {
     /* Send header of slave address */
     hi2c->Instance->DR = I2C_10BIT_HEADER_WRITE(DevAddress);
-
  8001860:	897b      	ldrh	r3, [r7, #10]
  8001862:	11db      	asrs	r3, r3, #7
  8001864:	b2db      	uxtb	r3, r3
@@ -3793,9 +3793,9 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  8001872:	68fb      	ldr	r3, [r7, #12]
  8001874:	681b      	ldr	r3, [r3, #0]
  8001876:	611a      	str	r2, [r3, #16]
+
     /* Wait until ADD10 flag is set */
     if (I2C_WaitOnMasterAddressFlagUntilTimeout(hi2c, I2C_FLAG_ADD10, Timeout, Tickstart) != HAL_OK)
-    {
  8001878:	683b      	ldr	r3, [r7, #0]
  800187a:	687a      	ldr	r2, [r7, #4]
  800187c:	490e      	ldr	r1, [pc, #56]	@ (80018b8 <I2C_MasterRequestWrite+0xfc>)
@@ -3804,23 +3804,23 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  8001884:	4603      	mov	r3, r0
  8001886:	2b00      	cmp	r3, #0
  8001888:	d001      	beq.n	800188e <I2C_MasterRequestWrite+0xd2>
+    {
       return HAL_ERROR;
-    }
  800188a:	2301      	movs	r3, #1
  800188c:	e010      	b.n	80018b0 <I2C_MasterRequestWrite+0xf4>
+    }
 
     /* Send slave address */
     hi2c->Instance->DR = I2C_10BIT_ADDRESS(DevAddress);
-  }
  800188e:	897b      	ldrh	r3, [r7, #10]
  8001890:	b2da      	uxtb	r2, r3
  8001892:	68fb      	ldr	r3, [r7, #12]
  8001894:	681b      	ldr	r3, [r3, #0]
  8001896:	611a      	str	r2, [r3, #16]
+  }
 
   /* Wait until ADDR flag is set */
   if (I2C_WaitOnMasterAddressFlagUntilTimeout(hi2c, I2C_FLAG_ADDR, Timeout, Tickstart) != HAL_OK)
-  {
  8001898:	683b      	ldr	r3, [r7, #0]
  800189a:	687a      	ldr	r2, [r7, #4]
  800189c:	4907      	ldr	r1, [pc, #28]	@ (80018bc <I2C_MasterRequestWrite+0x100>)
@@ -3829,15 +3829,15 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  80018a4:	4603      	mov	r3, r0
  80018a6:	2b00      	cmp	r3, #0
  80018a8:	d001      	beq.n	80018ae <I2C_MasterRequestWrite+0xf2>
+  {
     return HAL_ERROR;
-  }
  80018aa:	2301      	movs	r3, #1
  80018ac:	e000      	b.n	80018b0 <I2C_MasterRequestWrite+0xf4>
+  }
 
   return HAL_OK;
-}
  80018ae:	2300      	movs	r3, #0
-
+}
  80018b0:	4618      	mov	r0, r3
  80018b2:	3718      	adds	r7, #24
  80018b4:	46bd      	mov	sp, r7
@@ -3846,12 +3846,12 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
  80018bc:	00010002 	.word	0x00010002
 
 080018c0 <I2C_WaitOnFlagUntilTimeout>:
+  * @param  Timeout Timeout duration
   * @param  Tickstart Tick start value
   * @retval HAL status
   */
 static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uint32_t Flag, FlagStatus Status, uint32_t Timeout, uint32_t Tickstart)
 {
-  /* Wait until flag is set */
  80018c0:	b580      	push	{r7, lr}
  80018c2:	b084      	sub	sp, #16
  80018c4:	af00      	add	r7, sp, #0
@@ -3860,17 +3860,17 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
  80018ca:	603b      	str	r3, [r7, #0]
  80018cc:	4613      	mov	r3, r2
  80018ce:	71fb      	strb	r3, [r7, #7]
+  /* Wait until flag is set */
   while (__HAL_I2C_GET_FLAG(hi2c, Flag) == Status)
-  {
  80018d0:	e048      	b.n	8001964 <I2C_WaitOnFlagUntilTimeout+0xa4>
+  {
     /* Check for the Timeout */
     if (Timeout != HAL_MAX_DELAY)
-    {
  80018d2:	683b      	ldr	r3, [r7, #0]
  80018d4:	f1b3 3fff 	cmp.w	r3, #4294967295
  80018d8:	d044      	beq.n	8001964 <I2C_WaitOnFlagUntilTimeout+0xa4>
+    {
       if (((HAL_GetTick() - Tickstart) > Timeout) || (Timeout == 0U))
-      {
  80018da:	f7ff fa79 	bl	8000dd0 <HAL_GetTick>
  80018de:	4602      	mov	r2, r0
  80018e0:	69bb      	ldr	r3, [r7, #24]
@@ -3881,8 +3881,8 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
  80018ea:	683b      	ldr	r3, [r7, #0]
  80018ec:	2b00      	cmp	r3, #0
  80018ee:	d139      	bne.n	8001964 <I2C_WaitOnFlagUntilTimeout+0xa4>
+      {
         if ((__HAL_I2C_GET_FLAG(hi2c, Flag) == Status))
-        {
  80018f0:	68bb      	ldr	r3, [r7, #8]
  80018f2:	0c1b      	lsrs	r3, r3, #16
  80018f4:	b2db      	uxtb	r3, r3
@@ -3918,36 +3918,36 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
  8001930:	79fb      	ldrb	r3, [r7, #7]
  8001932:	429a      	cmp	r2, r3
  8001934:	d116      	bne.n	8001964 <I2C_WaitOnFlagUntilTimeout+0xa4>
+        {
           hi2c->PreviousState     = I2C_STATE_NONE;
-          hi2c->State             = HAL_I2C_STATE_READY;
  8001936:	68fb      	ldr	r3, [r7, #12]
  8001938:	2200      	movs	r2, #0
  800193a:	631a      	str	r2, [r3, #48]	@ 0x30
-          hi2c->Mode              = HAL_I2C_MODE_NONE;
+          hi2c->State             = HAL_I2C_STATE_READY;
  800193c:	68fb      	ldr	r3, [r7, #12]
  800193e:	2220      	movs	r2, #32
  8001940:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-          hi2c->ErrorCode         |= HAL_I2C_ERROR_TIMEOUT;
+          hi2c->Mode              = HAL_I2C_MODE_NONE;
  8001944:	68fb      	ldr	r3, [r7, #12]
  8001946:	2200      	movs	r2, #0
  8001948:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
-
+          hi2c->ErrorCode         |= HAL_I2C_ERROR_TIMEOUT;
  800194c:	68fb      	ldr	r3, [r7, #12]
  800194e:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  8001950:	f043 0220 	orr.w	r2, r3, #32
  8001954:	68fb      	ldr	r3, [r7, #12]
  8001956:	641a      	str	r2, [r3, #64]	@ 0x40
+
           /* Process Unlocked */
           __HAL_UNLOCK(hi2c);
-
  8001958:	68fb      	ldr	r3, [r7, #12]
  800195a:	2200      	movs	r2, #0
  800195c:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
           return HAL_ERROR;
-        }
  8001960:	2301      	movs	r3, #1
  8001962:	e023      	b.n	80019ac <I2C_WaitOnFlagUntilTimeout+0xec>
-  {
+  while (__HAL_I2C_GET_FLAG(hi2c, Flag) == Status)
  8001964:	68bb      	ldr	r3, [r7, #8]
  8001966:	0c1b      	lsrs	r3, r3, #16
  8001968:	b2db      	uxtb	r3, r3
@@ -3983,25 +3983,25 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
  80019a4:	79fb      	ldrb	r3, [r7, #7]
  80019a6:	429a      	cmp	r2, r3
  80019a8:	d093      	beq.n	80018d2 <I2C_WaitOnFlagUntilTimeout+0x12>
+        }
       }
     }
   }
   return HAL_OK;
-}
  80019aa:	2300      	movs	r3, #0
-
+}
  80019ac:	4618      	mov	r0, r3
  80019ae:	3710      	adds	r7, #16
  80019b0:	46bd      	mov	sp, r7
  80019b2:	bd80      	pop	{r7, pc}
 
 080019b4 <I2C_WaitOnMasterAddressFlagUntilTimeout>:
+  * @param  Timeout Timeout duration
   * @param  Tickstart Tick start value
   * @retval HAL status
   */
 static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uint32_t Flag, uint32_t Timeout, uint32_t Tickstart)
 {
-  while (__HAL_I2C_GET_FLAG(hi2c, Flag) == RESET)
  80019b4:	b580      	push	{r7, lr}
  80019b6:	b084      	sub	sp, #16
  80019b8:	af00      	add	r7, sp, #0
@@ -4009,19 +4009,19 @@ static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeD
  80019bc:	60b9      	str	r1, [r7, #8]
  80019be:	607a      	str	r2, [r7, #4]
  80019c0:	603b      	str	r3, [r7, #0]
-  {
+  while (__HAL_I2C_GET_FLAG(hi2c, Flag) == RESET)
  80019c2:	e071      	b.n	8001aa8 <I2C_WaitOnMasterAddressFlagUntilTimeout+0xf4>
+  {
     if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_AF) == SET)
-    {
  80019c4:	68fb      	ldr	r3, [r7, #12]
  80019c6:	681b      	ldr	r3, [r3, #0]
  80019c8:	695b      	ldr	r3, [r3, #20]
  80019ca:	f403 6380 	and.w	r3, r3, #1024	@ 0x400
  80019ce:	f5b3 6f80 	cmp.w	r3, #1024	@ 0x400
  80019d2:	d123      	bne.n	8001a1c <I2C_WaitOnMasterAddressFlagUntilTimeout+0x68>
+    {
       /* Generate Stop */
       SET_BIT(hi2c->Instance->CR1, I2C_CR1_STOP);
-
  80019d4:	68fb      	ldr	r3, [r7, #12]
  80019d6:	681b      	ldr	r3, [r3, #0]
  80019d8:	681a      	ldr	r2, [r3, #0]
@@ -4029,51 +4029,51 @@ static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeD
  80019dc:	681b      	ldr	r3, [r3, #0]
  80019de:	f442 7200 	orr.w	r2, r2, #512	@ 0x200
  80019e2:	601a      	str	r2, [r3, #0]
+
       /* Clear AF Flag */
       __HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_AF);
-
  80019e4:	68fb      	ldr	r3, [r7, #12]
  80019e6:	681b      	ldr	r3, [r3, #0]
  80019e8:	f46f 6280 	mvn.w	r2, #1024	@ 0x400
  80019ec:	615a      	str	r2, [r3, #20]
+
       hi2c->PreviousState       = I2C_STATE_NONE;
-      hi2c->State               = HAL_I2C_STATE_READY;
  80019ee:	68fb      	ldr	r3, [r7, #12]
  80019f0:	2200      	movs	r2, #0
  80019f2:	631a      	str	r2, [r3, #48]	@ 0x30
-      hi2c->Mode                = HAL_I2C_MODE_NONE;
+      hi2c->State               = HAL_I2C_STATE_READY;
  80019f4:	68fb      	ldr	r3, [r7, #12]
  80019f6:	2220      	movs	r2, #32
  80019f8:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-      hi2c->ErrorCode           |= HAL_I2C_ERROR_AF;
+      hi2c->Mode                = HAL_I2C_MODE_NONE;
  80019fc:	68fb      	ldr	r3, [r7, #12]
  80019fe:	2200      	movs	r2, #0
  8001a00:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
-
+      hi2c->ErrorCode           |= HAL_I2C_ERROR_AF;
  8001a04:	68fb      	ldr	r3, [r7, #12]
  8001a06:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  8001a08:	f043 0204 	orr.w	r2, r3, #4
  8001a0c:	68fb      	ldr	r3, [r7, #12]
  8001a0e:	641a      	str	r2, [r3, #64]	@ 0x40
+
       /* Process Unlocked */
       __HAL_UNLOCK(hi2c);
-
  8001a10:	68fb      	ldr	r3, [r7, #12]
  8001a12:	2200      	movs	r2, #0
  8001a14:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
       return HAL_ERROR;
-    }
  8001a18:	2301      	movs	r3, #1
  8001a1a:	e067      	b.n	8001aec <I2C_WaitOnMasterAddressFlagUntilTimeout+0x138>
+    }
 
     /* Check for the Timeout */
     if (Timeout != HAL_MAX_DELAY)
-    {
  8001a1c:	687b      	ldr	r3, [r7, #4]
  8001a1e:	f1b3 3fff 	cmp.w	r3, #4294967295
  8001a22:	d041      	beq.n	8001aa8 <I2C_WaitOnMasterAddressFlagUntilTimeout+0xf4>
+    {
       if (((HAL_GetTick() - Tickstart) > Timeout) || (Timeout == 0U))
-      {
  8001a24:	f7ff f9d4 	bl	8000dd0 <HAL_GetTick>
  8001a28:	4602      	mov	r2, r0
  8001a2a:	683b      	ldr	r3, [r7, #0]
@@ -4084,8 +4084,8 @@ static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeD
  8001a34:	687b      	ldr	r3, [r7, #4]
  8001a36:	2b00      	cmp	r3, #0
  8001a38:	d136      	bne.n	8001aa8 <I2C_WaitOnMasterAddressFlagUntilTimeout+0xf4>
+      {
         if ((__HAL_I2C_GET_FLAG(hi2c, Flag) == RESET))
-        {
  8001a3a:	68bb      	ldr	r3, [r7, #8]
  8001a3c:	0c1b      	lsrs	r3, r3, #16
  8001a3e:	b2db      	uxtb	r3, r3
@@ -4118,36 +4118,36 @@ static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeD
  8001a74:	b2db      	uxtb	r3, r3
  8001a76:	2b00      	cmp	r3, #0
  8001a78:	d016      	beq.n	8001aa8 <I2C_WaitOnMasterAddressFlagUntilTimeout+0xf4>
+        {
           hi2c->PreviousState       = I2C_STATE_NONE;
-          hi2c->State               = HAL_I2C_STATE_READY;
  8001a7a:	68fb      	ldr	r3, [r7, #12]
  8001a7c:	2200      	movs	r2, #0
  8001a7e:	631a      	str	r2, [r3, #48]	@ 0x30
-          hi2c->Mode                = HAL_I2C_MODE_NONE;
+          hi2c->State               = HAL_I2C_STATE_READY;
  8001a80:	68fb      	ldr	r3, [r7, #12]
  8001a82:	2220      	movs	r2, #32
  8001a84:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-          hi2c->ErrorCode           |= HAL_I2C_ERROR_TIMEOUT;
+          hi2c->Mode                = HAL_I2C_MODE_NONE;
  8001a88:	68fb      	ldr	r3, [r7, #12]
  8001a8a:	2200      	movs	r2, #0
  8001a8c:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
-
+          hi2c->ErrorCode           |= HAL_I2C_ERROR_TIMEOUT;
  8001a90:	68fb      	ldr	r3, [r7, #12]
  8001a92:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  8001a94:	f043 0220 	orr.w	r2, r3, #32
  8001a98:	68fb      	ldr	r3, [r7, #12]
  8001a9a:	641a      	str	r2, [r3, #64]	@ 0x40
+
           /* Process Unlocked */
           __HAL_UNLOCK(hi2c);
-
  8001a9c:	68fb      	ldr	r3, [r7, #12]
  8001a9e:	2200      	movs	r2, #0
  8001aa0:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
           return HAL_ERROR;
-        }
  8001aa4:	2301      	movs	r3, #1
  8001aa6:	e021      	b.n	8001aec <I2C_WaitOnMasterAddressFlagUntilTimeout+0x138>
-  {
+  while (__HAL_I2C_GET_FLAG(hi2c, Flag) == RESET)
  8001aa8:	68bb      	ldr	r3, [r7, #8]
  8001aaa:	0c1b      	lsrs	r3, r3, #16
  8001aac:	b2db      	uxtb	r3, r3
@@ -4180,54 +4180,54 @@ static HAL_StatusTypeDef I2C_WaitOnMasterAddressFlagUntilTimeout(I2C_HandleTypeD
  8001ae2:	b2db      	uxtb	r3, r3
  8001ae4:	2b00      	cmp	r3, #0
  8001ae6:	f47f af6d 	bne.w	80019c4 <I2C_WaitOnMasterAddressFlagUntilTimeout+0x10>
+        }
       }
     }
   }
   return HAL_OK;
-}
  8001aea:	2300      	movs	r3, #0
-
+}
  8001aec:	4618      	mov	r0, r3
  8001aee:	3710      	adds	r7, #16
  8001af0:	46bd      	mov	sp, r7
  8001af2:	bd80      	pop	{r7, pc}
 
 08001af4 <I2C_WaitOnTXEFlagUntilTimeout>:
+  * @param  Timeout Timeout duration
   * @param  Tickstart Tick start value
   * @retval HAL status
   */
 static HAL_StatusTypeDef I2C_WaitOnTXEFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uint32_t Timeout, uint32_t Tickstart)
 {
-  while (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_TXE) == RESET)
  8001af4:	b580      	push	{r7, lr}
  8001af6:	b084      	sub	sp, #16
  8001af8:	af00      	add	r7, sp, #0
  8001afa:	60f8      	str	r0, [r7, #12]
  8001afc:	60b9      	str	r1, [r7, #8]
  8001afe:	607a      	str	r2, [r7, #4]
-  {
+  while (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_TXE) == RESET)
  8001b00:	e034      	b.n	8001b6c <I2C_WaitOnTXEFlagUntilTimeout+0x78>
+  {
     /* Check if a NACK is detected */
     if (I2C_IsAcknowledgeFailed(hi2c) != HAL_OK)
-    {
  8001b02:	68f8      	ldr	r0, [r7, #12]
  8001b04:	f000 f886 	bl	8001c14 <I2C_IsAcknowledgeFailed>
  8001b08:	4603      	mov	r3, r0
  8001b0a:	2b00      	cmp	r3, #0
  8001b0c:	d001      	beq.n	8001b12 <I2C_WaitOnTXEFlagUntilTimeout+0x1e>
+    {
       return HAL_ERROR;
-    }
  8001b0e:	2301      	movs	r3, #1
  8001b10:	e034      	b.n	8001b7c <I2C_WaitOnTXEFlagUntilTimeout+0x88>
+    }
 
     /* Check for the Timeout */
     if (Timeout != HAL_MAX_DELAY)
-    {
  8001b12:	68bb      	ldr	r3, [r7, #8]
  8001b14:	f1b3 3fff 	cmp.w	r3, #4294967295
  8001b18:	d028      	beq.n	8001b6c <I2C_WaitOnTXEFlagUntilTimeout+0x78>
+    {
       if (((HAL_GetTick() - Tickstart) > Timeout) || (Timeout == 0U))
-      {
  8001b1a:	f7ff f959 	bl	8000dd0 <HAL_GetTick>
  8001b1e:	4602      	mov	r2, r0
  8001b20:	687b      	ldr	r3, [r7, #4]
@@ -4238,98 +4238,98 @@ static HAL_StatusTypeDef I2C_WaitOnTXEFlagUntilTimeout(I2C_HandleTypeDef *hi2c, 
  8001b2a:	68bb      	ldr	r3, [r7, #8]
  8001b2c:	2b00      	cmp	r3, #0
  8001b2e:	d11d      	bne.n	8001b6c <I2C_WaitOnTXEFlagUntilTimeout+0x78>
+      {
         if ((__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_TXE) == RESET))
-        {
  8001b30:	68fb      	ldr	r3, [r7, #12]
  8001b32:	681b      	ldr	r3, [r3, #0]
  8001b34:	695b      	ldr	r3, [r3, #20]
  8001b36:	f003 0380 	and.w	r3, r3, #128	@ 0x80
  8001b3a:	2b80      	cmp	r3, #128	@ 0x80
  8001b3c:	d016      	beq.n	8001b6c <I2C_WaitOnTXEFlagUntilTimeout+0x78>
+        {
           hi2c->PreviousState       = I2C_STATE_NONE;
-          hi2c->State               = HAL_I2C_STATE_READY;
  8001b3e:	68fb      	ldr	r3, [r7, #12]
  8001b40:	2200      	movs	r2, #0
  8001b42:	631a      	str	r2, [r3, #48]	@ 0x30
-          hi2c->Mode                = HAL_I2C_MODE_NONE;
+          hi2c->State               = HAL_I2C_STATE_READY;
  8001b44:	68fb      	ldr	r3, [r7, #12]
  8001b46:	2220      	movs	r2, #32
  8001b48:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-          hi2c->ErrorCode           |= HAL_I2C_ERROR_TIMEOUT;
+          hi2c->Mode                = HAL_I2C_MODE_NONE;
  8001b4c:	68fb      	ldr	r3, [r7, #12]
  8001b4e:	2200      	movs	r2, #0
  8001b50:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
-
+          hi2c->ErrorCode           |= HAL_I2C_ERROR_TIMEOUT;
  8001b54:	68fb      	ldr	r3, [r7, #12]
  8001b56:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  8001b58:	f043 0220 	orr.w	r2, r3, #32
  8001b5c:	68fb      	ldr	r3, [r7, #12]
  8001b5e:	641a      	str	r2, [r3, #64]	@ 0x40
+
           /* Process Unlocked */
           __HAL_UNLOCK(hi2c);
-
  8001b60:	68fb      	ldr	r3, [r7, #12]
  8001b62:	2200      	movs	r2, #0
  8001b64:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
           return HAL_ERROR;
-        }
  8001b68:	2301      	movs	r3, #1
  8001b6a:	e007      	b.n	8001b7c <I2C_WaitOnTXEFlagUntilTimeout+0x88>
-  {
+  while (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_TXE) == RESET)
  8001b6c:	68fb      	ldr	r3, [r7, #12]
  8001b6e:	681b      	ldr	r3, [r3, #0]
  8001b70:	695b      	ldr	r3, [r3, #20]
  8001b72:	f003 0380 	and.w	r3, r3, #128	@ 0x80
  8001b76:	2b80      	cmp	r3, #128	@ 0x80
  8001b78:	d1c3      	bne.n	8001b02 <I2C_WaitOnTXEFlagUntilTimeout+0xe>
+        }
       }
     }
   }
   return HAL_OK;
-}
  8001b7a:	2300      	movs	r3, #0
-
+}
  8001b7c:	4618      	mov	r0, r3
  8001b7e:	3710      	adds	r7, #16
  8001b80:	46bd      	mov	sp, r7
  8001b82:	bd80      	pop	{r7, pc}
 
 08001b84 <I2C_WaitOnBTFFlagUntilTimeout>:
+  * @param  Timeout Timeout duration
   * @param  Tickstart Tick start value
   * @retval HAL status
   */
 static HAL_StatusTypeDef I2C_WaitOnBTFFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uint32_t Timeout, uint32_t Tickstart)
 {
-  while (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == RESET)
  8001b84:	b580      	push	{r7, lr}
  8001b86:	b084      	sub	sp, #16
  8001b88:	af00      	add	r7, sp, #0
  8001b8a:	60f8      	str	r0, [r7, #12]
  8001b8c:	60b9      	str	r1, [r7, #8]
  8001b8e:	607a      	str	r2, [r7, #4]
-  {
+  while (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == RESET)
  8001b90:	e034      	b.n	8001bfc <I2C_WaitOnBTFFlagUntilTimeout+0x78>
+  {
     /* Check if a NACK is detected */
     if (I2C_IsAcknowledgeFailed(hi2c) != HAL_OK)
-    {
  8001b92:	68f8      	ldr	r0, [r7, #12]
  8001b94:	f000 f83e 	bl	8001c14 <I2C_IsAcknowledgeFailed>
  8001b98:	4603      	mov	r3, r0
  8001b9a:	2b00      	cmp	r3, #0
  8001b9c:	d001      	beq.n	8001ba2 <I2C_WaitOnBTFFlagUntilTimeout+0x1e>
+    {
       return HAL_ERROR;
-    }
  8001b9e:	2301      	movs	r3, #1
  8001ba0:	e034      	b.n	8001c0c <I2C_WaitOnBTFFlagUntilTimeout+0x88>
+    }
 
     /* Check for the Timeout */
     if (Timeout != HAL_MAX_DELAY)
-    {
  8001ba2:	68bb      	ldr	r3, [r7, #8]
  8001ba4:	f1b3 3fff 	cmp.w	r3, #4294967295
  8001ba8:	d028      	beq.n	8001bfc <I2C_WaitOnBTFFlagUntilTimeout+0x78>
+    {
       if (((HAL_GetTick() - Tickstart) > Timeout) || (Timeout == 0U))
-      {
  8001baa:	f7ff f911 	bl	8000dd0 <HAL_GetTick>
  8001bae:	4602      	mov	r2, r0
  8001bb0:	687b      	ldr	r3, [r7, #4]
@@ -4340,120 +4340,120 @@ static HAL_StatusTypeDef I2C_WaitOnBTFFlagUntilTimeout(I2C_HandleTypeDef *hi2c, 
  8001bba:	68bb      	ldr	r3, [r7, #8]
  8001bbc:	2b00      	cmp	r3, #0
  8001bbe:	d11d      	bne.n	8001bfc <I2C_WaitOnBTFFlagUntilTimeout+0x78>
+      {
         if ((__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == RESET))
-        {
  8001bc0:	68fb      	ldr	r3, [r7, #12]
  8001bc2:	681b      	ldr	r3, [r3, #0]
  8001bc4:	695b      	ldr	r3, [r3, #20]
  8001bc6:	f003 0304 	and.w	r3, r3, #4
  8001bca:	2b04      	cmp	r3, #4
  8001bcc:	d016      	beq.n	8001bfc <I2C_WaitOnBTFFlagUntilTimeout+0x78>
+        {
           hi2c->PreviousState       = I2C_STATE_NONE;
-          hi2c->State               = HAL_I2C_STATE_READY;
  8001bce:	68fb      	ldr	r3, [r7, #12]
  8001bd0:	2200      	movs	r2, #0
  8001bd2:	631a      	str	r2, [r3, #48]	@ 0x30
-          hi2c->Mode                = HAL_I2C_MODE_NONE;
+          hi2c->State               = HAL_I2C_STATE_READY;
  8001bd4:	68fb      	ldr	r3, [r7, #12]
  8001bd6:	2220      	movs	r2, #32
  8001bd8:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-          hi2c->ErrorCode           |= HAL_I2C_ERROR_TIMEOUT;
+          hi2c->Mode                = HAL_I2C_MODE_NONE;
  8001bdc:	68fb      	ldr	r3, [r7, #12]
  8001bde:	2200      	movs	r2, #0
  8001be0:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
-
+          hi2c->ErrorCode           |= HAL_I2C_ERROR_TIMEOUT;
  8001be4:	68fb      	ldr	r3, [r7, #12]
  8001be6:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  8001be8:	f043 0220 	orr.w	r2, r3, #32
  8001bec:	68fb      	ldr	r3, [r7, #12]
  8001bee:	641a      	str	r2, [r3, #64]	@ 0x40
+
           /* Process Unlocked */
           __HAL_UNLOCK(hi2c);
-
  8001bf0:	68fb      	ldr	r3, [r7, #12]
  8001bf2:	2200      	movs	r2, #0
  8001bf4:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
           return HAL_ERROR;
-        }
  8001bf8:	2301      	movs	r3, #1
  8001bfa:	e007      	b.n	8001c0c <I2C_WaitOnBTFFlagUntilTimeout+0x88>
-  {
+  while (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_BTF) == RESET)
  8001bfc:	68fb      	ldr	r3, [r7, #12]
  8001bfe:	681b      	ldr	r3, [r3, #0]
  8001c00:	695b      	ldr	r3, [r3, #20]
  8001c02:	f003 0304 	and.w	r3, r3, #4
  8001c06:	2b04      	cmp	r3, #4
  8001c08:	d1c3      	bne.n	8001b92 <I2C_WaitOnBTFFlagUntilTimeout+0xe>
+        }
       }
     }
   }
   return HAL_OK;
-}
  8001c0a:	2300      	movs	r3, #0
-
+}
  8001c0c:	4618      	mov	r0, r3
  8001c0e:	3710      	adds	r7, #16
  8001c10:	46bd      	mov	sp, r7
  8001c12:	bd80      	pop	{r7, pc}
 
 08001c14 <I2C_IsAcknowledgeFailed>:
+  * @param  hi2c Pointer to a I2C_HandleTypeDef structure that contains
   *                the configuration information for the specified I2C.
   * @retval HAL status
   */
 static HAL_StatusTypeDef I2C_IsAcknowledgeFailed(I2C_HandleTypeDef *hi2c)
 {
-  if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_AF) == SET)
  8001c14:	b480      	push	{r7}
  8001c16:	b083      	sub	sp, #12
  8001c18:	af00      	add	r7, sp, #0
  8001c1a:	6078      	str	r0, [r7, #4]
-  {
+  if (__HAL_I2C_GET_FLAG(hi2c, I2C_FLAG_AF) == SET)
  8001c1c:	687b      	ldr	r3, [r7, #4]
  8001c1e:	681b      	ldr	r3, [r3, #0]
  8001c20:	695b      	ldr	r3, [r3, #20]
  8001c22:	f403 6380 	and.w	r3, r3, #1024	@ 0x400
  8001c26:	f5b3 6f80 	cmp.w	r3, #1024	@ 0x400
  8001c2a:	d11b      	bne.n	8001c64 <I2C_IsAcknowledgeFailed+0x50>
+  {
     /* Clear NACKF Flag */
     __HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_AF);
-
  8001c2c:	687b      	ldr	r3, [r7, #4]
  8001c2e:	681b      	ldr	r3, [r3, #0]
  8001c30:	f46f 6280 	mvn.w	r2, #1024	@ 0x400
  8001c34:	615a      	str	r2, [r3, #20]
+
     hi2c->PreviousState       = I2C_STATE_NONE;
-    hi2c->State               = HAL_I2C_STATE_READY;
  8001c36:	687b      	ldr	r3, [r7, #4]
  8001c38:	2200      	movs	r2, #0
  8001c3a:	631a      	str	r2, [r3, #48]	@ 0x30
-    hi2c->Mode                = HAL_I2C_MODE_NONE;
+    hi2c->State               = HAL_I2C_STATE_READY;
  8001c3c:	687b      	ldr	r3, [r7, #4]
  8001c3e:	2220      	movs	r2, #32
  8001c40:	f883 203d 	strb.w	r2, [r3, #61]	@ 0x3d
-    hi2c->ErrorCode           |= HAL_I2C_ERROR_AF;
+    hi2c->Mode                = HAL_I2C_MODE_NONE;
  8001c44:	687b      	ldr	r3, [r7, #4]
  8001c46:	2200      	movs	r2, #0
  8001c48:	f883 203e 	strb.w	r2, [r3, #62]	@ 0x3e
-
+    hi2c->ErrorCode           |= HAL_I2C_ERROR_AF;
  8001c4c:	687b      	ldr	r3, [r7, #4]
  8001c4e:	6c1b      	ldr	r3, [r3, #64]	@ 0x40
  8001c50:	f043 0204 	orr.w	r2, r3, #4
  8001c54:	687b      	ldr	r3, [r7, #4]
  8001c56:	641a      	str	r2, [r3, #64]	@ 0x40
+
     /* Process Unlocked */
     __HAL_UNLOCK(hi2c);
-
  8001c58:	687b      	ldr	r3, [r7, #4]
  8001c5a:	2200      	movs	r2, #0
  8001c5c:	f883 203c 	strb.w	r2, [r3, #60]	@ 0x3c
+
     return HAL_ERROR;
-  }
  8001c60:	2301      	movs	r3, #1
  8001c62:	e000      	b.n	8001c66 <I2C_IsAcknowledgeFailed+0x52>
+  }
   return HAL_OK;
-}
  8001c64:	2300      	movs	r3, #0
-
+}
  8001c66:	4618      	mov	r0, r3
  8001c68:	370c      	adds	r7, #12
  8001c6a:	46bd      	mov	sp, r7
