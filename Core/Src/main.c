@@ -18,12 +18,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "string.h"
-#include "ssd_1306.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "string.h"
+#include "ssd_1306.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,6 +42,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc1;
+
 I2C_HandleTypeDef hi2c1;
 
 UART_HandleTypeDef huart2;
@@ -49,6 +51,7 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 #define DISPLAY_X_SIZE 128
 #define DISPLAY_Y_SIZE 64
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,8 +59,10 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_ADC1_Init(void);
 /* USER CODE BEGIN PFP */
-
+void Put_Pixel(uint8_t SSD1306_FrameBufferPages[128][8], uint8_t x, uint8_t y,
+		uint8_t bit);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -98,26 +103,43 @@ int main(void) {
 	MX_GPIO_Init();
 	MX_USART2_UART_Init();
 	MX_I2C1_Init();
+	MX_ADC1_Init();
 	/* USER CODE BEGIN 2 */
 	I2C_SSD1306_Screen_Init(&hi2c1);
+	if (HAL_ADC_Start(&hadc1) != HAL_OK) {
+		Error_Handler();
+	}
+
+	uint32_t value_adc;
 
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-		/* USER CODE END WHILE */
+	/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
+		memset(&SSD1306_FrameBufferPages, 0, 1024);
+		value_adc = HAL_ADC_GetValue(&hadc1);
 
-		//testing values, swap between a full white and full black screen every second
-		memset(SSD1306_FrameBufferPages, 0b00000000, 1024);
-		HAL_Delay(5000);
+		if (HAL_ADC_Start(&hadc1) != HAL_OK) {
+			Error_Handler();
+		}
+		uint8_t corrected_adc_value = (0b11111111 & value_adc) / 4;
+
+		for (int x = 0; x < 128; x++) {
+			for (int y = 0; y < 64; y++) {
+				uint8_t is_greater = 0;
+				if (y < corrected_adc_value) {
+					is_greater = 1;
+				}
+				Put_Pixel(SSD1306_FrameBufferPages, x, y, is_greater);
+			}
+		}
+
 		I2C_SSD1306_Update_Whole_Display(SSD1306_FrameBufferPages);
 
-		memset(SSD1306_FrameBufferPages, 0b11111111, 1024);
-		HAL_Delay(5000);
-		I2C_SSD1306_Update_Whole_Display(SSD1306_FrameBufferPages);
 		continue;
 
 	}
@@ -165,6 +187,67 @@ void SystemClock_Config(void) {
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
 		Error_Handler();
 	}
+}
+
+/**
+ * @brief ADC1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_ADC1_Init(void) {
+
+	/* USER CODE BEGIN ADC1_Init 0 */
+
+	/* USER CODE END ADC1_Init 0 */
+
+	ADC_AnalogWDGConfTypeDef AnalogWDGConfig = { 0 };
+	ADC_ChannelConfTypeDef sConfig = { 0 };
+
+	/* USER CODE BEGIN ADC1_Init 1 */
+
+	/* USER CODE END ADC1_Init 1 */
+
+	/** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+	 */
+	hadc1.Instance = ADC1;
+	hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+	hadc1.Init.Resolution = ADC_RESOLUTION_8B;
+	hadc1.Init.ScanConvMode = DISABLE;
+	hadc1.Init.ContinuousConvMode = ENABLE;
+	hadc1.Init.DiscontinuousConvMode = DISABLE;
+	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+	hadc1.Init.NbrOfConversion = 1;
+	hadc1.Init.DMAContinuousRequests = DISABLE;
+	hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+	if (HAL_ADC_Init(&hadc1) != HAL_OK) {
+		Error_Handler();
+	}
+
+	/** Configure the analog watchdog
+	 */
+	AnalogWDGConfig.WatchdogMode = ADC_ANALOGWATCHDOG_SINGLE_REG;
+	AnalogWDGConfig.HighThreshold = 0;
+	AnalogWDGConfig.LowThreshold = 0;
+	AnalogWDGConfig.Channel = ADC_CHANNEL_8;
+	AnalogWDGConfig.ITMode = DISABLE;
+	if (HAL_ADC_AnalogWDGConfig(&hadc1, &AnalogWDGConfig) != HAL_OK) {
+		Error_Handler();
+	}
+
+	/** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	 */
+	sConfig.Channel = ADC_CHANNEL_8;
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+	/* USER CODE BEGIN ADC1_Init 2 */
+
+	/* USER CODE END ADC1_Init 2 */
+
 }
 
 /**
@@ -269,6 +352,13 @@ static void MX_GPIO_Init(void) {
 
 /* USER CODE BEGIN 4 */
 
+//simple function to be able to place a pixel in a 128x64 grid, from the buffer pages
+//
+void Put_Pixel(uint8_t SSD1306_FrameBufferPages[128][8], uint8_t x, uint8_t y,
+		uint8_t bit) {
+	uint8_t page = y / 8;
+	SSD1306_FrameBufferPages[x][page] |= bit << (y - (page * 8));
+}
 
 /* USER CODE END 4 */
 

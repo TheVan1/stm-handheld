@@ -7,9 +7,9 @@
 
 #include "main.h"
 
-I2C_HandleTypeDef * hi2c;
+I2C_HandleTypeDef *hi2c;
 
-void I2C_SSD1306_Screen_Init(I2C_HandleTypeDef * hi2c);
+void I2C_SSD1306_Screen_Init(I2C_HandleTypeDef *hi2c);
 void I2C_SSD1306_Update_Whole_Display(uint8_t SSD1306_FrameBufferPages[128][8]);
 void I2C_SSD1306_Screen_Transmit(uint16_t data_len, uint8_t *data);
 
@@ -18,7 +18,7 @@ void I2C_SSD1306_Screen_Transmit(uint16_t data_len, uint8_t *data);
  * @param None
  * @retval None
  */
-void I2C_SSD1306_Screen_Init(I2C_HandleTypeDef * hi2c1) {
+void I2C_SSD1306_Screen_Init(I2C_HandleTypeDef *hi2c1) {
 	hi2c = hi2c1;
 	//Reference manual for initialisation sequence can be found here, pg 64 (https://www.alldatasheet.com/datasheet-pdf/view/1179026/ETC2/SSD1306.html)
 
@@ -47,12 +47,12 @@ void I2C_SSD1306_Screen_Init(I2C_HandleTypeDef * hi2c1) {
 
 	// Set Segment re-map (0xA1)
 	data[0] = 0x80;
-	data[1] = 0xA1;
+	data[1] = 0xA0;
 	I2C_SSD1306_Screen_Transmit((uint16_t) 2, data);
 
 	// I2C_SSD1306_Screen_Transmit(ection (0xC8)
 	data[0] = 0x80;
-	data[1] = 0xC8;
+	data[1] = 0xC0;
 	I2C_SSD1306_Screen_Transmit((uint16_t) 2, data);
 
 	// Set COM hardware configuration (0xDA) to 0x12
@@ -102,12 +102,12 @@ void I2C_SSD1306_Screen_Init(I2C_HandleTypeDef * hi2c1) {
 	data[1] = 0xAF;
 	I2C_SSD1306_Screen_Transmit((uint16_t) 2, data);
 
-	// Set Direction for pages (0x20) to columns (0x01)
+	// Set Direction for pages (0x20) to Horizontal Addressing (0x00)
 	data[0] = 0x80;
 	data[1] = 0x20;
 	I2C_SSD1306_Screen_Transmit((uint16_t) 2, data);
 	data[0] = 0x80;
-	data[1] = 0x01;
+	data[1] = 0x00;
 	I2C_SSD1306_Screen_Transmit((uint16_t) 2, data);
 
 }
@@ -162,6 +162,5 @@ void I2C_SSD1306_Update_Whole_Display(uint8_t SSD1306_FrameBufferPages[128][8]) 
 }
 
 void I2C_SSD1306_Screen_Transmit(uint16_t data_len, uint8_t *data) {
-	HAL_I2C_Master_Transmit(hi2c, ((uint16_t) 0x3c) << 1, data, data_len,
-			100);
+	HAL_I2C_Master_Transmit(hi2c, ((uint16_t) 0x3c) << 1, data, data_len, 100);
 }
